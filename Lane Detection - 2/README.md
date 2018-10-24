@@ -7,7 +7,7 @@ In this project, the goal was to write a software pipeline to identify the lane 
 The Project
 ---
 
-The goals / steps of this project are the following:
+The steps of this project involved the following:
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * Apply a distortion correction to raw images.
