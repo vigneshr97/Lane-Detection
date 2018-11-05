@@ -56,15 +56,10 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 ### Pipeline (single images)
 
-#### 1. Provide an example of a distortion-corrected image.
-
 The distortion matrix obtained was used to unwarp one of the test images as below
-![
-![alt text](output_image/undistorted.jpg)
+![alt text](output_images/undistorted.jpg)
 
-#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+Then, I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `proj2.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
 
 ![alt text][image3]
 
