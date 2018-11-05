@@ -57,57 +57,43 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 ### Pipeline (single images)
 
 The distortion matrix obtained was used to unwarp one of the test images as below
+
 ![alt text](output_images/undistorted.jpg)
 
-Then, I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `proj2.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+Then, I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines #45 through #74 in `proj2.py`).  Here's an example of my output for this step.
 
-![alt text][image3]
+![alt text](output_images/hls.jpg)
 
-#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
-
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `unwarp_image()`, which appears in lines 76 through 88 in the code.  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose to hardcode the source and destination points in the following manner:
 
 ```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+src = np.float32([[img.shape[1]/2-60,img.shape[0]/2+90],[img.shape[1]/2+60,img.shape[0]/2+90],[(img.shape[1]*3/4)+140,img.shape[0]-20],[img.shape[1]/4-110,img.shape[0]-20]])
+dst = np.float32([[img.shape[1]/4,0],[img.shape[1]*3/4,0],[img.shape[1]*3/4,img.shape[0]],[img.shape[1]/4,img.shape[0]]])
+
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 580, 450      | 320, 0        | 
+| 700, 450      | 960, 0      |
+| 1100, 700     | 960, 720      |
+| 210, 700      | 320, 720        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
+![alt text](output_images/perspective.jpg)
 
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+Window search was performed to obtain the lane pixels. Then polyfit function helped in obtaining the second order equation of the the two curves like the following image. The functions are found from lines 90 through 180. The window search is restricted near the initially found curve after the first frame is processed and the function search_around_poly found from lines 180 through 242 performs this
+![alt text](output_images/polynomial_fit.jpg)
 
-![alt text][image5]
+The radii of curvature of the two curves are calculated using the given formula and they are converted from pixels to metres by approximate measurements. The average of the two radii is assumed as the radius of the curve. The midpoint of the bottom of the two edges is obtained and the distance of it from the midpoint of the frame is the distance of the car from the centre of the lane. lines 302-313
 
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+The inverse perspective transform is performed and the image is brought back to the normal view. The corresponding function is found in the lines 315 to 330
 
-I did this in lines # through # in my code in `my_other_file.py`
-
-#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
-
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
-
-![alt text][image6]
+![alt text](output_images/final0.jpg)
 
 ---
 
