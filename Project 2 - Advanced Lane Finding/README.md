@@ -18,9 +18,6 @@ The steps of this project involved the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-Python code: proj2.py; 
-iPython Notebook: P2.ipynb; 
-
 The images for camera calibration are stored in the folder called `camera_cal`.  
 
 [//]: # (Image References)
