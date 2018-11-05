@@ -36,11 +36,8 @@ The goals / steps of this project are the following:
 
 ### Writeup / README
 
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
 
-
-
-The code has been written in the following format. All the libraries will be imported. Then all the required functions will be declared and at the end, the functions will be called
+The code begins with all the libraries being imported. Then all the required functions are declared and at the end, the functions are called to obtain the results.
 
 ### Camera Calibration
 
