@@ -95,7 +95,5 @@ Here's a [link to my video result](./project_video.mp4)
 
 ### Discussion
 
-#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
-
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Though the project is more robust than the previous one, it fails under a few conditions. When the brightness increases, the detected region wobbles around. The presence of a thick crack on the lane might result in wrong predictions as seen in a challenge video. The presence of bikes and sharp curves lead to further wrong predictions.
 
