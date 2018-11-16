@@ -28,7 +28,7 @@ OUTPUT: values provided by the c++ program to the simulator
 ["rmse_vy"]
 
 The following image shows the final rmse values of x, y, vx, vy
-![image1] (images/image1.jpg)
+![image1](images/image1.jpg)
 
 ---
 
