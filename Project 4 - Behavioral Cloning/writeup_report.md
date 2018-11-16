@@ -46,7 +46,7 @@ python drive.py model.h5
 
 The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
-### Model Architecture and Training Strategy
+### Model Architecture and Training
 
 #### 1. An appropriate model architecture has been employed with appropriate data augmentation
 The architecture is similar to NVIDIA architecture. It starts with convolutional layers that have 5x5 filters with depths of 24, 36 and 48 respectively in the first 3 layers and a stride of 2 in both the directions. These layers are followed by two convolutional layers each having 3x3 filters of depth 64 with strides of 1 in both the directions. Exponential Linear Unit activation function is used in all the five convolutional layers. A maxpooling layer follows. The layer is flattened and fed into four fully connected layers with first two having ELU activation. (model.py lines 134 to 147). The model includes ELU layers to introduce nonlinearity, and the data is normalized in the model using a Keras lambda layer (code line 125). 
