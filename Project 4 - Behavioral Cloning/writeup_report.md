@@ -51,9 +51,8 @@ The model.py file contains the code for training and saving the convolution neur
 #### 1. An appropriate model architecture has been employed with appropriate data augmentation
 The architecture is similar to NVIDIA architecture. It starts with convolutional layers that have 5x5 filters with depths of 24, 36 and 48 respectively in the first 3 layers and a stride of 2 in both the directions. These layers are followed by two convolutional layers each having 3x3 filters of depth 64 with strides of 1 in both the directions. Exponential Linear Unit activation function is used in all the five convolutional layers. A maxpooling layer follows. The layer is flattened and fed into four fully connected layers with first two having ELU activation. (model.py lines 134 to 147). The model includes ELU layers to introduce nonlinearity, and the data is normalized in the model using a Keras lambda layer (code line 125). 
 
-The final step was to run the simulator to see how well the car was driving around track one. For the initial few times, the car fell off the track due to the main reason of not feeding in proper data. With proper recovery laps and bias reduction by removing too continuous straight driving data, the model was finally able to perform better.
+The final step was to run the simulator to see how well the car was driving around track one. For the initial few times, the car fell off the track due to the main reason of not feeding in proper data. With proper recovery laps and bias reduction by removing too continuous straight driving data, the model was finally able to perform better. Following is an example of a recovery lap
 
-Following is an example of a recovery lap
 ![image1](images/recovery_1.jpg)
 ![image2](images/recovery_2.jpg)
 ![image3](images/recovery_3.jpg)
