@@ -54,9 +54,9 @@ The architecture is similar to NVIDIA architecture. It starts with convolutional
 The final step was to run the simulator to see how well the car was driving around track one. For the initial few times, the car fell off the track due to the main reason of not feeding in proper data. With proper recovery laps and bias reduction by removing too continuous straight driving data, the model was finally able to perform better.
 
 Following is an example of a recovery lap
-![alt text][image1](../images/recovery_1.jpg)
-![alt text][image2](../images/recovery_2.jpg)
-![alt text][image3](../images/recovery_3.jpg)
+![image1](../images/recovery_1.jpg)
+![image2](../images/recovery_2.jpg)
+![image3](../images/recovery_3.jpg)
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
