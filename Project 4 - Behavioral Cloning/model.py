@@ -74,53 +74,34 @@ with open(data_file, 'r') as csvfile:
 
 
 random.shuffle(lines)
+#The images are shuffled in the very beginning to remove too continuous straight driving
 images = []
 measurements = []
 i = 0
 for line in lines:
+	#since the angle is biased a lot towards 0, it is ensured that there doesn't exist more than 1 zero in every 10 continuous image except for the first 10.
 	if i > 10:
 		if (((measurements[-1]==0)|(measurements[-2]==0)|(measurements[-3]==0)|(measurements[-4]==0)|(measurements[-5]==0)|(measurements[-6]==0)|(measurements[-7]==0)|(measurements[-8]==0)|(measurements[-9]==0)|(measurements[-10]==0))&(float(line[3])==0)):
 			continue
 
-	if i%500 == 0:
-		print(i)
+	# if i%500 == 0:
+	# 	print(i)
 	i += 1
-	#image = cv2.imread('orig_data/'+line[0])
+	#The image is read using mpimg to obtain it in RGB format
 	image = mpimg.imread(line[0])
 	measurement = float(line[3])
 	images.append(image)
 	measurements.append(measurement)
 	
+	#The data is augmented by using histogram equalization and brightness modification
 	clahe_image = apply_clahe(image)
 	brightness_image = modify_brightness(image)
-	# trans_image = apply_translation(image)
-	# gauss_image = gaussianblur(image)
-	# med_image = medianblur(image)
-	#images.append(trans_image)
 	images.append(brightness_image)
 	images.append(clahe_image)
-	# images.append(gauss_image)
-	# images.append(med_image)
-
 	measurements.append(measurement)
 	measurements.append(measurement)
-	# measurements.append(measurement)
-	# measurements.append(measurement)
-	# measurements.append(measurement)
 
-	# image1 = cv2.imread('orig_data/'+line[1][1:])
-	# image1 = mpimg.imread(line[1])
-	# measurement1 = float(line[3]) + 0.2
-	# images.append(image1)
-	# measurements.append(measurement1)
-
-	
-	# image2 = cv2.imread('orig_data/'+line[2][1:])
-	# image2 = mpimg.imread(line[2])
-	# measurement2 = float(line[3]) - 0.2
-	# images.append(image2)
-	# measurements.append(measurement2)
-	
+	#The image is flipped and the same augmentations as above are performed
 	image_flipped = np.fliplr(image)
 	measurement_flipped = -measurement
 	images.append(image_flipped)
@@ -128,38 +109,28 @@ for line in lines:
 
 	clahe_image_flipped = apply_clahe(image_flipped)
 	brightness_image_flipped = modify_brightness(image_flipped)
-	# trans_image_flipped = apply_translation(image_flipped)
-	# gauss_image_flipped = gaussianblur(image_flipped)
-	# med_image_flipped = medianblur(image_flipped)
 	images.append(clahe_image_flipped)
 	images.append(brightness_image_flipped)
-	# images.append(gauss_image_flipped)
-	# images.append(med_image_flipped)
-	#images.append(trans_image_flipped)
 	measurements.append(measurement_flipped)
 	measurements.append(measurement_flipped)
-	# measurements.append(measurement_flipped)
-	# measurements.append(measurement_flipped)
-	#measurements.append(measurement_flipped)
-
-	# image_flipped1 = np.fliplr(image1)
-	# measurement_flipped1 = -measurement1
-	# images.append(image_flipped1)
-	# measurements.append(measurement_flipped1)
-
-	# image_flipped2 = np.fliplr(image2)
-	# measurement_flipped2 = -measurement2
-	# images.append(image_flipped2)
-	# measurements.append(measurement_flipped2)
 
 X_train = np.array(images)
 y_train = np.array(measurements)
 
 
 model = Sequential()
+#The image is cropped 50 px in the top and 20 px in the bottom due to redundant data
 model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160, 320, 3)))
+#The images are normalized to lie between -0.5 and 0.5.
 model.add(Lambda(lambda x: (x/255.0)-0.5, input_shape = (160, 320, 3)))
 
+#The architecture is similar to NVIDIA architecture. It starts with convolutional layers that have 
+#24, 36 and 48 , 5x5 filters respectively in the first 3 layers and a stride of 2 in both the directions.
+#These layers are followed by two convolutional layers each having 64 3x3 filters with strides of 1
+#in both the directions. Exponential Linear Unit activation function is used in all the five convolutional
+#layers. A maxpooling layer follows. The layer is flattened and fed into four fully connected layers with
+#first two having ELU activation. Dropout is applied in each layer after the first one with a probability of
+#retaining the weights equal to 0.5. It was also realized that maxpooling layers take a long time
 model.add(Convolution2D(24,(5,5), padding = 'valid', strides = (2,2), activation='elu'))
 model.add(Convolution2D(36,(5,5), padding = 'valid', strides = (2,2), activation='elu'))
 model.add(Convolution2D(48,(5,5), padding = 'valid', strides = (2,2), activation='elu'))
@@ -176,6 +147,12 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 
 #sgd = optimizers.SGD(lr=0.005, decay=1e-6, momentum=0.9, nesterov=True)
+#SGD was tried. But Adam optimizer performed better. An Adam optimizer with a modifiable learning rate
+#was used. The learning rate was set to 0.001. Loss function was mean squared error as the objective
+#is regression. A model named model.h5 was created after training around 20000 images and validating
+#against around 6000 images. The bath size was 128 and the number of epochs was 3.
+#Since generator function consumed a lot of time, the model available in the directory was created without
+#a generator function. model_with_generator.py has the code with a generator function
 adam = optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 #model.compile(loss='mean_squared_error', optimizer=sgd)
 model.compile(loss = 'mse', optimizer = adam)    #mse is used here instead of a cross entropy function because it is a regression and not a classification
