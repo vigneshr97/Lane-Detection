@@ -73,4 +73,4 @@ The model used an adam optimizer, with a tunable learning rate which was set to 
 
 Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road
 
-I had around 20000 training data and 7000 validation data and the validation loss started getting constant after the thiurd epoch.
+I had around 42000 training data and 14000 validation data and the validation loss started getting constant after the third epoch.
