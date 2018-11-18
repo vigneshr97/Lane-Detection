@@ -116,7 +116,7 @@ LeNet architecture was chosen and a few modifications were made:
 Here are five German traffic signs that I found on the web:
 
 ![image10](traffic-signs-data/60kmph.jpg)
-![image11](traffic-signs-data/bicycles crossing.jpg)
+![image11](traffic-signs-data/bicycles\ crossing.jpg)
 ![image12](traffic-signs-data/road work.jpg)
 ![image13](traffic-signs-data/slippery road.jpg)
 ![image14](traffic-signs-data/stop sign.jpg)
