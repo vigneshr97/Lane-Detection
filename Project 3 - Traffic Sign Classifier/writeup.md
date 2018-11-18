@@ -116,10 +116,10 @@ LeNet architecture was chosen and a few modifications were made:
 Here are five German traffic signs that I found on the web:
 
 ![image10](traffic-signs-data/60kmph.jpg)
-![image10](traffic-signs-data/bicycles crossing.jpg)
-![image10](traffic-signs-data/road work.jpg)
-![image10](traffic-signs-data/slippery road.jpg)
-![image10](traffic-signs-data/stop sign.jpg)
+![image11](traffic-signs-data/bicycles crossing.jpg)
+![image12](traffic-signs-data/road work.jpg)
+![image13](traffic-signs-data/slippery road.jpg)
+![image14](traffic-signs-data/stop sign.jpg)
 
 The first image might be difficult to classify because of its similarity with 80 and its not a classifier focussed on numbers. So distinctive features of each number were not taken into account unlike a number classifier. After running it on more epochs, this problem got resolved. The second image gave its result as a bumpy road a few times due to unknown reasons.
 
