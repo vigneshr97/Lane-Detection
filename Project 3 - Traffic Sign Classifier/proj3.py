@@ -2,7 +2,10 @@ import pickle
 import numpy as np
 import random
 import numpy as np
+import matplotlib as mpl
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import tensorflow as tf
 from sklearn.utils import shuffle
 from tensorflow.contrib.layers import flatten
@@ -331,7 +334,7 @@ with tf.Session() as sess:
 new_image_files = glob.glob('traffic-signs-data/new*.jpg')
 new_img = np.zeros((10,32,32,3))
 for idx, fname in enumerate(new_image_files):
-    new_img[i] = cv2.imread(fname)
+    new_img[i] = mpimg.imread(fname)
     print(LeNet(new_img[i]))
 
 
