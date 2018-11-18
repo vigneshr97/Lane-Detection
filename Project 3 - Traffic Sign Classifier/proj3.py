@@ -1,8 +1,10 @@
 import pickle
 import numpy as np
 import random
+import cv2
 import numpy as np
 import matplotlib as mpl
+import pandas as pd
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -101,7 +103,6 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-
 def apply_clahe(img):
     lab = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
     lab_planes = cv2.split(lab)
@@ -164,7 +165,6 @@ def augment2(img, k):
     if(k == 4):
         return gaussianblur(apply_rotation(img))
 
-
 print('Data augmentation on progress .......')
 augment_X = []
 augment_y = []
@@ -189,8 +189,6 @@ for i in range(len(labels)):
 
 X_train = np.append(X_train, augment_X).reshape(len(X_train)+len(augment_X),32,32,3)
 y_train = np.append(y_train, augment_y)
-
-
 
 X_train = np.dot(X_train[:,:,:,0:3],[0.299, 0.587, 0.114]).reshape(len(X_train),32,32,1)
 X_valid = np.dot(X_valid[:,:,:,0:3],[0.299, 0.587, 0.114]).reshape(4410,32,32,1)
@@ -268,8 +266,6 @@ def LeNet(x):
     
     return logits
 
-
- ### Train your model here.
 x = tf.placeholder(tf.float32, (None, 32, 32, 1))
 y = tf.placeholder(tf.int32, (None))
 one_hot_y = tf.one_hot(y, 43)
@@ -277,7 +273,7 @@ one_hot_y = tf.one_hot(y, 43)
 rate = 0.001
 
 logits = LeNet(x)
-cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=one_hot_y, logits=logits)
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_y, logits=logits)
 loss_operation = tf.reduce_mean(cross_entropy)
 optimizer = tf.train.AdamOptimizer(learning_rate = rate)
 training_operation = optimizer.minimize(loss_operation)
@@ -297,7 +293,13 @@ def evaluate(X_data, y_data):
         total_accuracy += (accuracy * len(batch_x))
     return total_accuracy / num_examples
 
+def predict(X_data):
+    sess = tf.get_default_session()
+    prediction = sess.run(logits, feed_dict = {x: X_data})
+    return prediction
 
+train_accuracy = []
+valid_accuracy = []
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     num_examples = len(X_train)
@@ -312,14 +314,18 @@ with tf.Session() as sess:
             sess.run(training_operation, feed_dict={x: batch_x, y: batch_y})
         validation_accuracy = evaluate(X_valid, y_valid)
         training_accuracy = evaluate(X_train, y_train)
+        valid_accuracy.append(validation_accuracy)
+        train_accuracy.append(training_accuracy)
         print("EPOCH {} ...".format(i+1))
         print("Training Accuracy = {:.3f}".format(training_accuracy))
         print("Validation Accuracy = {:.3f}".format(validation_accuracy))
         print()
-        
+    df=pd.DataFrame({'epoch': range(1,101), 'Training_accuracy': train_accuracy, 'Validation_accuracy': valid_accuracy})
+    plt.plot( 'epoch', 'Training_accuracy', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4)
+    plt.plot( 'epoch', 'Validation_accuracy', data=df, marker='', color='olive', linewidth=2)
+    plt.legend()
     saver.save(sess, './lenet')
     print("Model saved")
-
 
 ### Once a final model architecture is selected,
 ### the accuracy on the test set should be calculated and reported as well.
@@ -331,37 +337,71 @@ with tf.Session() as sess:
 
 ### Load the images and plot them here.
 ### Feel free to use as many code cells as needed.
-new_image_files = glob.glob('traffic-signs-data/new*.jpg')
-new_img = np.zeros((10,32,32,3))
-for idx, fname in enumerate(new_image_files):
-    new_img[i] = mpimg.imread(fname)
-    print(LeNet(new_img[i]))
+#from PIL import Image
+import csv
+new_image_files = ['60kmph.jpg', 'bicycles crossing.jpg', 'road work.jpg', 'slippery road.jpg', 'stop sign.jpg']
+new_data = np.asarray([3, 29, 25, 23, 14])
+new_img = []
+i = 0
+sign_name = []
+with open('signnames.csv') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)
+    for sign in reader:
+        sign_name.append(sign[1])
+    
+for fname in new_image_files:
+    img = mpimg.imread('traffic-signs-data/'+fname)
+    plt.figure()
+    plt.imshow(img)
+    img = cv2.resize(img, (32, 32))
+    img = np.dot(img[:,:,0:3],[0.299, 0.587, 0.114]).reshape(img.shape[0],img.shape[1],1)
+    img = img/128 - 1
+    new_img.append(np.float32(img))
+new_img = np.asarray(new_img)
 
+### Run the predictions here and use the model to output the prediction for each image.
+### Make sure to pre-process the images with the same pre-processing pipeline used earlier.
+### Feel free to use as many code cells as needed.
+accuracy = 0
+with tf.Session() as sess:
+    saver.restore(sess, tf.train.latest_checkpoint('.'))
+    prediction_logits = predict(new_img)
+    exp_pred = np.exp(prediction_logits)
+    s_pred = np.sum(exp_pred, axis = 1).reshape(5, 1)
+    prediction = exp_pred/s_pred
+    top5 = sess.run(tf.nn.top_k(tf.constant(prediction), k=5))
+    print(top5)
+    print()
+    print()
+    print('Predictions:')
+    predictions = top5.indices[:,0]
+    accuracy = np.sum(predictions == new_data)
+    sign_predictions = []
+    for i in range(len(predictions)):
+        sign_predictions.append(sign_name[predictions[i]])
+    print(sign_predictions)
+#     accuracy = evaluate(new_img, new_data)
+    accuracy = accuracy*100/5
+    print("Test Accuracy = {:.3f}".format(accuracy))
+    
+### Calculate the accuracy for these 5 new images. 
+### For example, if the model predicted 1 out of 5 signs correctly, it's 20% accurate on these new images.
+print("New images Accuracy = {:.2f}%".format(accuracy))
 
+### Print out the top five softmax probabilities for the predictions on the German traffic sign images found on the web. 
+### Feel free to use as many code cells as needed.
+pred = top5.indices
+pred_sign_names = []
+for i in range(len(pred)):
+    pred_sign_names.append([])
+    for j in range(len(pred[i])):
+        pred_sign_names[i].append(sign_name[pred[i][j]])
 
-
-
-
-
-
-
-def outputFeatureMap(image_input, tf_activation, activation_min=-1, activation_max=-1 ,plt_num=1):
-    # Here make sure to preprocess your image_input in a way your network expects
-    # with size, normalization, ect if needed
-    # image_input =
-    # Note: x should be the same name as your network's tensorflow data placeholder variable
-    # If you get an error tf_activation is not defined it may be having trouble accessing the variable from inside a function
-    activation = tf_activation.eval(session=sess,feed_dict={x : image_input})
-    featuremaps = activation.shape[3]
-    plt.figure(plt_num, figsize=(15,15))
-    for featuremap in range(featuremaps):
-        plt.subplot(6,8, featuremap+1) # sets the number of feature maps to show on each row and column
-        plt.title('FeatureMap ' + str(featuremap)) # displays the feature map number
-        if activation_min != -1 & activation_max != -1:
-            plt.imshow(activation[0,:,:, featuremap], interpolation="nearest", vmin =activation_min, vmax=activation_max, cmap="gray")
-        elif activation_max != -1:
-            plt.imshow(activation[0,:,:, featuremap], interpolation="nearest", vmax=activation_max, cmap="gray")
-        elif activation_min !=-1:
-            plt.imshow(activation[0,:,:, featuremap], interpolation="nearest", vmin=activation_min, cmap="gray")
-        else:
-            plt.imshow(activation[0,:,:, featuremap], interpolation="nearest", cmap="gray")
+for i in range(5):
+    print('probabilities on the image '+new_image_files[i][:-4]+':')
+    for j in range(5):
+        print('probability of the image being '+str(pred_sign_names[i][j])+': {:.3f}'.format(top5.values[i][j]))
+    print('')
+    print('')
+print(top5.values)
