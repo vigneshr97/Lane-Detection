@@ -45,14 +45,6 @@ Here is a bar chart of the test data set
 
 As a first step, I decided to convert the images to grayscale. Then the images were normalized for every value to lie between -1 and 1.
 
-After grayscaling,
-
-![image4](images/gray.jpg)
-
-After normalizing,
-
-![image5][images/normalized.jpg]
-
 I decided to generate additional data because the test accuracy values were really low and amount of data provided is low. After data augmentation, the number of images in each category was 2500 which was almost thrice the original size. The data augmentation was performed using various image processing techniques. The techniques used were median blurring, Gaussian blurring, Histogram Equalization (CLAHE), Brightness modification, random rotation of upto 15 degrees in either direction and translation of upto 5 pixels on either sides.
 
 The difference between the original data set and the augmented data set is the following ... 
