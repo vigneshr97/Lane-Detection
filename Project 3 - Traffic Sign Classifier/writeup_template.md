@@ -49,7 +49,7 @@ Here is a bar chart of the validation data set
 
 Here is a bar chart of the test data set
 
-![image1](images/bar1.png)
+![image1](images/bar3.png)
 
 ### Design and Test a Model Architecture
 
@@ -66,8 +66,6 @@ After normalizing,
 ![image5][images/normalized.jpg]
 
 I decided to generate additional data because the test accuracy values were really low and amount of data provided is low. After data augmentation, the number of images in each category was 2500 which was almost thrice the original size. The data augmentation was performed using various image processing techniques. The techniques used were median blurring, Gaussian blurring, Histogram Equalization (CLAHE), Brightness modification, random rotation of upto 15 degrees in either direction and translation of upto 5 pixels on either sides.
-
-![alt text][image3]
 
 The difference between the original data set and the augmented data set is the following ... 
 
@@ -117,8 +115,11 @@ LeNet architecture was chosen and a few modifications were made:
 
 Here are five German traffic signs that I found on the web:
 
-![image10]() ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![image10](traffic-sign-data/60kmph.jpg)
+![image10](traffic-sign-data/bicycles crossing.jpg)
+![image10](traffic-sign-data/road work.jpg)
+![image10](traffic-sign-data/slippery road.jpg)
+![image10](traffic-sign-data/stop sign.jpg)
 
 The first image might be difficult to classify because of its similarity with 80 and its not a classifier focussed on numbers. So distinctive features of each number were not taken into account unlike a number classifier. After running it on more epochs, this problem got resolved. The second image gave its result as a bumpy road a few times due to unknown reasons.
 
