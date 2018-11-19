@@ -52,6 +52,12 @@ The difference between the original data set and the augmented data set is the f
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
+LeNet architecture was chosen and a few modifications were made:
+* Since LeNet was developed for Character recognition which is almost similar to a traffic sign classification problem, the same architecture was chosen with a few modifications
+* Another fully connected layer with RELU was added and dropout was introduced in both the layers to prevent overfitting
+* An extra fully connected layer was added and it was observed to perform better.
+* Adam optimizer was chosen as it performed better in previous experiences (including behavioral cloning project). The Stochastic Gradient descent is believed to improve slower than the Adam optimizer
+
 My final model consisted of the following layers:
 
 | Layer         		|     Description	        					| 
@@ -74,7 +80,7 @@ My final model consisted of the following layers:
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an Adam optimizer with a tuneable learning rate which was set to 0.001. The number of epochs was 50 and the batch size was 256. The weights were initialized from a truncated normal distribution with mean 0 and a standard deviation of 0.06.  
+To train the model, I used an Adam optimizer with a tunable learning rate which was set to 0.001. The number of epochs was 50 initially and it was still improving. Each run of the experiment had a different stopping point for improvement. So a safer higher epoch value of 100 was set. The batch size was set to 256 because the accuracy was almost similar to when it was set to 64 and 128 after a few epochs. The weights were initialized from a truncated normal distribution with mean 0 and a standard deviation of 0.06. Those values were chosen by testing the accuracy by changing both the values. The model improves much faster when these two values were used. 
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
@@ -86,7 +92,9 @@ My final model results were:
 
 LeNet architecture was chosen and a few modifications were made:
 * Since LeNet was developed for Character recognition which is almost similar to a traffic sign classification problem, the same architecture was chosen with a few modifications
-* Another fully connected layer with RELU was added and dropout was introduced in both the layers
+* Another fully connected layer with RELU was added and dropout was introduced in both the layers to prevent overfitting
+* Adam optimizer was chosen as it performed better in previous experiences (including behavioral cloning project). The Stochastic Gradient descent is believed to improve slower than the Adam optimizer
+* The parameter tuning started with changing mean and standard deviation of the normal distribution from where the values of weights are chosen. Then learning rate, batch size and epochs are tuned in the same order. Then dropouts were introduced and a significant improvement was observed
  
 
 ### Test a Model on New Images
@@ -101,7 +109,7 @@ Here are five German traffic signs that I found on the web:
 ![image13](images/slip.jpg)
 ![image14](images/stop.jpg)
 
-The first image might be difficult to classify because of its similarity with 80 and its not a classifier focussed on numbers. So distinctive features of each number were not taken into account unlike a number classifier. After running it on more epochs, this problem got resolved. The second image gave its result as a bumpy road a few times due to unknown reasons.
+The first image might be difficult to classify because of its similarity with 80 and its not a classifier focussed on numbers. So distinctive features of each number were not taken into account unlike a number classifier. After running it on more epochs, this problem got resolved. The second image gave its result as a bumpy road a few times.
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -133,4 +141,40 @@ For the first image, the model is very sure that the sign is a speed limit of 60
 | <0.001				| Speed Limit 30 Kmph       						|
 
 
-For the second image, the model is almost sure with a probability of 0.868 with a bumpy road being predicted with a probability of 0.132. The other probabilities were almost zero with the order being Children crossing, Dangerous curve to the right and slippery road. In many other runs, the bumpy road sign was the one that was actually predicted. The last three signs encountered precise and accuarate prdictions with the probabilities of predictions being almost equal to 1.
+For the second image, the model is almost sure with a probability of 0.868 with a bumpy road being predicted with a probability of 0.132. The other probabilities were almost zero with the order being Children crossing, Dangerous curve to the right and slippery road. In many other runs, the bumpy road sign was the one that was actually predicted.
+| Probability         	|     Prediction	        					    | 
+|:---------------------:|:-------------------------------------------------:| 
+| 0.868         			| Bicycles Crossing   						    | 
+| 0.132     			| Bumpy Road 					    |
+| <0.001				| Children Crossing							    |
+| <0.001	      		| Dangerous curve to the right|
+| <0.001				| Slippery Road       						|
+
+The last three signs encountered precise and accurate predictions with the probabilities of predictions being almost equal to 1.
+Predictions for third image
+| Probability         	|     Prediction	        					    | 
+|:---------------------:|:-------------------------------------------------:| 
+| 1.000         			| Road work   						    | 
+| <0.001     			| Bumpy Road 					    |
+| <0.001				| Slippery Road							    |
+| <0.001	      		| Dangerous curve to the right|
+| <0.001				| Wild animals crossing       						|
+
+
+Predictions for fourth image
+| Probability         	|     Prediction	        					    | 
+|:---------------------:|:-------------------------------------------------:| 
+| 1.000         			| Slippery Road   						    | 
+| <0.001     			| Bicycles Crossing 					    |
+| <0.001				| Wild animals Crossing							    |
+| <0.001	      		| Road narrows down on the right|
+| <0.001				| Bumpy Road       						|
+
+Predictions for fifth image
+| Probability         	|     Prediction	        					    | 
+|:---------------------:|:-------------------------------------------------:| 
+| 1.000         			| Stop   						    | 
+| <0.001     			| No vehicles 					    |
+| <0.001				| speed limit - 60 km/h							    |
+| <0.001	      		| speed limit - 120 km/h|
+| <0.001				| Bicycles crossing       						|
